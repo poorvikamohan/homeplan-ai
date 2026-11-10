@@ -1,244 +1,207 @@
-
 import { useState } from 'react'
-import FloorPlan from './FloorPlan'
 import './App.css'
 
 function App() {
-  const [page, setPage] = useState('dashboard')
-  const [project, setProject] = useState({
-    name: '',
-    length: '',
-    width: '',
-    floors: '1',
-    bedrooms: '2',
-    bathrooms: '2',
-    requirements: ''
-  })
+  const [prompt, setPrompt] = useState('')
+  const [submittedPrompt, setSubmittedPrompt] = useState('')
 
-  const [created, setCreated] = useState(false)
+  const examples = [
+    'A modern 3-bedroom home with an open kitchen, garden and balcony.',
+    'A minimalist 2-bedroom home with a spacious living room and home office.',
+    'A warm, contemporary family home with 4 bedrooms and a courtyard.'
+  ]
 
-  function handleChange(e) {
-    setProject({
-      ...project,
-      [e.target.name]: e.target.value
-    })
+  function handleGenerate() {
+    if (!prompt.trim()) return
+
+    setSubmittedPrompt(prompt.trim())
   }
 
-  function handleSubmit(e) {
-    e.preventDefault()
-
-    if (Number(project.length) <= 0 || Number(project.width) <= 0) {
-      alert('Please enter valid plot dimensions.')
-      return
-    }
-
-    setCreated(true)
+  function useExample(example) {
+    setPrompt(example)
+    setSubmittedPrompt('')
   }
 
   return (
-    <div className="app">
-      <aside className="sidebar">
-        <h2>🏡 HomePlan AI</h2>
+    <div className="home-page">
+      <nav className="top-nav">
+        <a className="brand" href="/">
+          <span className="brand-mark">H</span>
+          <span>homeplan<span className="brand-ai">.ai</span></span>
+        </a>
 
-        <nav>
-          <p onClick={() => setPage('dashboard')}>Dashboard</p>
-          <p onClick={() => setPage('project')}>My Projects</p>
-          <p onClick={() => setPage('project')}>Floor Plans</p>
-          <p onClick={() => setPage('project')}>3D Designs</p>
-        </nav>
-
-        <div className="sidebar-bottom">
-          <p>Settings</p>
-          <p>Help & Support</p>
+        <div className="nav-links">
+          <a href="#how-it-works">How it works</a>
+          <a href="#inspiration">Inspiration</a>
+          <button className="nav-button" onClick={() => {
+            document.getElementById('design-prompt')?.focus()
+          }}>
+            Start designing <span>↗</span>
+          </button>
         </div>
-      </aside>
+      </nav>
 
-      <main className="main-content">
+      <main>
+        <section className="hero-section">
+          <div className="hero-copy">
+            <div className="eyebrow">
+              <span className="eyebrow-line"></span>
+              YOUR HOME, REIMAGINED
+            </div>
 
-        {page === 'dashboard' ? (
-          <>
-            <header>
-              <div>
-                <h1>Design your dream home.</h1>
-                <p>Turn your ideas into beautiful house plans with AI.</p>
-              </div>
-              <button onClick={() => {
-                setPage('project')
-                setCreated(false)
-              }}>
-                + New Project
-              </button>
-            </header>
+            <h1>
+              Imagine it.
+              <br />
+              <span>We'll design it.</span>
+            </h1>
 
-            <section className="welcome">
-              <div>
-                <span>YOUR PERSONAL AI ARCHITECT</span>
-                <h2>Imagine it. Describe it. Build it.</h2>
-                <p>
-                  Tell us about your dream home and let AI help
-                  you bring your vision to life.
-                </p>
-                <button onClick={() => {
-                  setPage('project')
-                  setCreated(false)
-                }}>
-                  Start Designing →
+            <p className="hero-description">
+              From a simple idea to a thoughtful home design.
+              Describe the home you've always imagined, and
+              let your design journey begin.
+            </p>
+
+            <div className="prompt-card">
+              <label htmlFor="design-prompt">
+                DESCRIBE YOUR DREAM HOME
+              </label>
+
+              <textarea
+                id="design-prompt"
+                value={prompt}
+                onChange={(event) => {
+                  setPrompt(event.target.value)
+                  setSubmittedPrompt('')
+                }}
+                placeholder="I'd love a modern 3-bedroom home with an open kitchen, a spacious living room, a small garden and a balcony..."
+                rows="4"
+              />
+
+              <div className="prompt-footer">
+                <span>✦ Be as descriptive as you like</span>
+
+                <button
+                  className="generate-button"
+                  onClick={handleGenerate}
+                  disabled={!prompt.trim()}
+                >
+                  Generate my home <span>→</span>
                 </button>
               </div>
-            </section>
+            </div>
 
-            <section className="projects">
-              <h2>Start with a project</h2>
+            <div className="example-prompts">
+              <span className="example-heading">NEED SOME INSPIRATION?</span>
 
-              <div className="project-grid">
-                <div className="project-card" onClick={() => setPage('project')}>
-                  <span>🏠</span>
-                  <h3>Generate a Floor Plan</h3>
-                  <p>Create a layout from your plot dimensions and requirements.</p>
-                </div>
-
-                <div className="project-card" onClick={() => setPage('project')}>
-                  <span>🧱</span>
-                  <h3>Explore 3D Designs</h3>
-                  <p>Visualize your future home in three dimensions.</p>
-                </div>
-
-                <div className="project-card" onClick={() => setPage('project')}>
-                  <span>💬</span>
-                  <h3>Ask AI to Design</h3>
-                  <p>Describe your dream home in your own words.</p>
-                </div>
-              </div>
-            </section>
-          </>
-        ) : (
-          <section className="form-section">
-            <button className="back-button" onClick={() => setPage('dashboard')}>
-              ← Back to Dashboard
-            </button>
-
-            {!created ? (
-              <>
-                <h1>Create your dream home</h1>
-                <p className="form-description">
-                  Tell us about your plot and what kind of home you want.
-                </p>
-
-                <form onSubmit={handleSubmit}>
-                  <label>Project Name</label>
-                  <input
-                    name="name"
-                    value={project.name}
-                    onChange={handleChange}
-                    placeholder="e.g. My Dream Home"
-                    required
-                  />
-
-                  <h3>Plot Dimensions (in feet)</h3>
-
-                  <div className="form-row">
-                    <div>
-                      <label>Plot Length</label>
-                      <input
-                        type="number"
-                        name="length"
-                        min="1"
-                        value={project.length}
-                        onChange={handleChange}
-                        placeholder="e.g. 40"
-                        required
-                      />
-                    </div>
-
-                    <div>
-                      <label>Plot Width</label>
-                      <input
-                        type="number"
-                        name="width"
-                        min="1"
-                        value={project.width}
-                        onChange={handleChange}
-                        placeholder="e.g. 30"
-                        required
-                      />
-                    </div>
-                  </div>
-
-                  <h3>House Requirements</h3>
-
-                  <div className="form-row">
-                    <div>
-                      <label>Number of Floors</label>
-                      <select name="floors" value={project.floors} onChange={handleChange}>
-                        <option value="1">1 Floor</option>
-                        <option value="2">2 Floors</option>
-                        <option value="3">3 Floors</option>
-                      </select>
-                    </div>
-
-                    <div>
-                      <label>Bedrooms</label>
-                      <select name="bedrooms" value={project.bedrooms} onChange={handleChange}>
-                        <option value="1">1 Bedroom</option>
-                        <option value="2">2 Bedrooms</option>
-                        <option value="3">3 Bedrooms</option>
-                        <option value="4">4 Bedrooms</option>
-                        <option value="5">5 Bedrooms</option>
-                      </select>
-                    </div>
-                  </div>
-
-                  <label>Bathrooms</label>
-                  <select name="bathrooms" value={project.bathrooms} onChange={handleChange}>
-                    <option value="1">1 Bathroom</option>
-                    <option value="2">2 Bathrooms</option>
-                    <option value="3">3 Bathrooms</option>
-                    <option value="4">4 Bathrooms</option>
-                  </select>
-
-                  <label>Additional Requirements</label>
-                  <textarea
-                    name="requirements"
-                    value={project.requirements}
-                    onChange={handleChange}
-                    placeholder="e.g. I want a balcony, parking space, open kitchen..."
-                    rows="4"
-                  />
-
-                  <button type="submit" className="create-button">
-                    Create Project →
+              <div className="example-list">
+                {examples.map((example, index) => (
+                  <button
+                    key={index}
+                    className="example-chip"
+                    onClick={() => useExample(example)}
+                  >
+                    {example}
+                    <span>↗</span>
                   </button>
-                </form>
-              </>
-            ) : (
-              <div className="success-section">
-                <h1>🎉 Project Details Saved!</h1>
-                <p>Your project information has been captured.</p>
-
-                <div className="project-summary">
-                  <h2>{project.name}</h2>
-                  <p>Plot: {project.length} × {project.width} feet</p>
-                  <p>Plot area: {Number(project.length) * Number(project.width)} sq. ft.</p>
-                  <p>Floors: {project.floors}</p>
-                  <p>Bedrooms: {project.bedrooms}</p>
-                  <p>Bathrooms: {project.bathrooms}</p>
-                  <p>Requirements: {project.requirements || 'None specified'}</p>
-                </div>
-                <FloorPlan project={project} />
-
-                <p className="next-message">
-                  Next, we'll use these details to generate your floor plan.
-                </p>
-
-                <button onClick={() => setPage('dashboard')}>
-                  Back to Dashboard
-                </button>
+                ))}
               </div>
-            )}
+            </div>
+          </div>
+
+          <div className="hero-visual">
+            <div className="visual-image">
+              <div className="image-label">
+                <span className="label-dot"></span>
+                DESIGN INSPIRATION
+              </div>
+
+              <div className="image-caption">
+                <span>01 / THE MODERN HOME</span>
+                <h2>Spaces that<br />feel like you.</h2>
+              </div>
+            </div>
+
+            <div className="floating-note">
+              <span className="note-icon">⌂</span>
+              <div>
+                <strong>Thoughtful by design</strong>
+                <p>Every space begins with an idea.</p>
+              </div>
+            </div>
+
+            <div className="visual-number">01</div>
+          </div>
+        </section>
+
+        {submittedPrompt && (
+          <section className="preview-section" aria-live="polite">
+            <div className="section-eyebrow">YOUR DESIGN BRIEF</div>
+            <h2>A home begins with an idea.</h2>
+            <p className="submitted-prompt">“{submittedPrompt}”</p>
+
+            <div className="demo-notice">
+              <span>✦</span>
+              <div>
+                <strong>Your design brief is ready.</strong>
+                <p>
+                  This is currently a homepage prototype. The next milestone
+                  is connecting an AI service to interpret your prompt and
+                  generate a floor plan. No AI-generated design has been
+                  created yet.
+                </p>
+              </div>
+            </div>
           </section>
         )}
 
+        <section className="how-section" id="how-it-works">
+          <div>
+            <div className="section-eyebrow">A SIMPLER WAY TO DESIGN</div>
+            <h2>From imagination<br />to your future home.</h2>
+          </div>
+
+          <div className="steps-grid">
+            <article className="step-card">
+              <span>01</span>
+              <h3>Describe</h3>
+              <p>Tell us about your home, your lifestyle and the spaces you need.</p>
+            </article>
+
+            <article className="step-card">
+              <span>02</span>
+              <h3>Visualize</h3>
+              <p>Explore a thoughtfully planned 2D floor plan and 3D home model.</p>
+            </article>
+
+            <article className="step-card">
+              <span>03</span>
+              <h3>Refine</h3>
+              <p>Make changes to your design until it feels right for you.</p>
+            </article>
+          </div>
+        </section>
+
+        <section className="inspiration-section" id="inspiration">
+          <div>
+            <div className="section-eyebrow">THE HOMEPLAN APPROACH</div>
+            <h2>Good design starts<br />with understanding.</h2>
+          </div>
+          <p>
+            Your home should reflect the way you live.
+            We are building a space where ideas become plans,
+            and plans become something you can explore.
+          </p>
+        </section>
       </main>
+
+      <footer className="footer">
+        <a className="brand footer-brand" href="/">
+          <span className="brand-mark">H</span>
+          <span>homeplan<span className="brand-ai">.ai</span></span>
+        </a>
+        <span>DESIGNED AROUND YOUR IDEAS.</span>
+        <span>© 2026 HOMEPLAN AI</span>
+      </footer>
     </div>
   )
 }
