@@ -1,121 +1,245 @@
+
 import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
+import FloorPlan from './FloorPlan'
 import './App.css'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [page, setPage] = useState('dashboard')
+  const [project, setProject] = useState({
+    name: '',
+    length: '',
+    width: '',
+    floors: '1',
+    bedrooms: '2',
+    bathrooms: '2',
+    requirements: ''
+  })
+
+  const [created, setCreated] = useState(false)
+
+  function handleChange(e) {
+    setProject({
+      ...project,
+      [e.target.name]: e.target.value
+    })
+  }
+
+  function handleSubmit(e) {
+    e.preventDefault()
+
+    if (Number(project.length) <= 0 || Number(project.width) <= 0) {
+      alert('Please enter valid plot dimensions.')
+      return
+    }
+
+    setCreated(true)
+  }
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+    <div className="app">
+      <aside className="sidebar">
+        <h2>🏡 HomePlan AI</h2>
 
-      <div className="ticks"></div>
+        <nav>
+          <p onClick={() => setPage('dashboard')}>Dashboard</p>
+          <p onClick={() => setPage('project')}>My Projects</p>
+          <p onClick={() => setPage('project')}>Floor Plans</p>
+          <p onClick={() => setPage('project')}>3D Designs</p>
+        </nav>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
+        <div className="sidebar-bottom">
+          <p>Settings</p>
+          <p>Help & Support</p>
         </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      </aside>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
+      <main className="main-content">
+
+        {page === 'dashboard' ? (
+          <>
+            <header>
+              <div>
+                <h1>Design your dream home.</h1>
+                <p>Turn your ideas into beautiful house plans with AI.</p>
+              </div>
+              <button onClick={() => {
+                setPage('project')
+                setCreated(false)
+              }}>
+                + New Project
+              </button>
+            </header>
+
+            <section className="welcome">
+              <div>
+                <span>YOUR PERSONAL AI ARCHITECT</span>
+                <h2>Imagine it. Describe it. Build it.</h2>
+                <p>
+                  Tell us about your dream home and let AI help
+                  you bring your vision to life.
+                </p>
+                <button onClick={() => {
+                  setPage('project')
+                  setCreated(false)
+                }}>
+                  Start Designing →
+                </button>
+              </div>
+            </section>
+
+            <section className="projects">
+              <h2>Start with a project</h2>
+
+              <div className="project-grid">
+                <div className="project-card" onClick={() => setPage('project')}>
+                  <span>🏠</span>
+                  <h3>Generate a Floor Plan</h3>
+                  <p>Create a layout from your plot dimensions and requirements.</p>
+                </div>
+
+                <div className="project-card" onClick={() => setPage('project')}>
+                  <span>🧱</span>
+                  <h3>Explore 3D Designs</h3>
+                  <p>Visualize your future home in three dimensions.</p>
+                </div>
+
+                <div className="project-card" onClick={() => setPage('project')}>
+                  <span>💬</span>
+                  <h3>Ask AI to Design</h3>
+                  <p>Describe your dream home in your own words.</p>
+                </div>
+              </div>
+            </section>
+          </>
+        ) : (
+          <section className="form-section">
+            <button className="back-button" onClick={() => setPage('dashboard')}>
+              ← Back to Dashboard
+            </button>
+
+            {!created ? (
+              <>
+                <h1>Create your dream home</h1>
+                <p className="form-description">
+                  Tell us about your plot and what kind of home you want.
+                </p>
+
+                <form onSubmit={handleSubmit}>
+                  <label>Project Name</label>
+                  <input
+                    name="name"
+                    value={project.name}
+                    onChange={handleChange}
+                    placeholder="e.g. My Dream Home"
+                    required
+                  />
+
+                  <h3>Plot Dimensions (in feet)</h3>
+
+                  <div className="form-row">
+                    <div>
+                      <label>Plot Length</label>
+                      <input
+                        type="number"
+                        name="length"
+                        min="1"
+                        value={project.length}
+                        onChange={handleChange}
+                        placeholder="e.g. 40"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label>Plot Width</label>
+                      <input
+                        type="number"
+                        name="width"
+                        min="1"
+                        value={project.width}
+                        onChange={handleChange}
+                        placeholder="e.g. 30"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <h3>House Requirements</h3>
+
+                  <div className="form-row">
+                    <div>
+                      <label>Number of Floors</label>
+                      <select name="floors" value={project.floors} onChange={handleChange}>
+                        <option value="1">1 Floor</option>
+                        <option value="2">2 Floors</option>
+                        <option value="3">3 Floors</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label>Bedrooms</label>
+                      <select name="bedrooms" value={project.bedrooms} onChange={handleChange}>
+                        <option value="1">1 Bedroom</option>
+                        <option value="2">2 Bedrooms</option>
+                        <option value="3">3 Bedrooms</option>
+                        <option value="4">4 Bedrooms</option>
+                        <option value="5">5 Bedrooms</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <label>Bathrooms</label>
+                  <select name="bathrooms" value={project.bathrooms} onChange={handleChange}>
+                    <option value="1">1 Bathroom</option>
+                    <option value="2">2 Bathrooms</option>
+                    <option value="3">3 Bathrooms</option>
+                    <option value="4">4 Bathrooms</option>
+                  </select>
+
+                  <label>Additional Requirements</label>
+                  <textarea
+                    name="requirements"
+                    value={project.requirements}
+                    onChange={handleChange}
+                    placeholder="e.g. I want a balcony, parking space, open kitchen..."
+                    rows="4"
+                  />
+
+                  <button type="submit" className="create-button">
+                    Create Project →
+                  </button>
+                </form>
+              </>
+            ) : (
+              <div className="success-section">
+                <h1>🎉 Project Details Saved!</h1>
+                <p>Your project information has been captured.</p>
+
+                <div className="project-summary">
+                  <h2>{project.name}</h2>
+                  <p>Plot: {project.length} × {project.width} feet</p>
+                  <p>Plot area: {Number(project.length) * Number(project.width)} sq. ft.</p>
+                  <p>Floors: {project.floors}</p>
+                  <p>Bedrooms: {project.bedrooms}</p>
+                  <p>Bathrooms: {project.bathrooms}</p>
+                  <p>Requirements: {project.requirements || 'None specified'}</p>
+                </div>
+                <FloorPlan project={project} />
+
+                <p className="next-message">
+                  Next, we'll use these details to generate your floor plan.
+                </p>
+
+                <button onClick={() => setPage('dashboard')}>
+                  Back to Dashboard
+                </button>
+              </div>
+            )}
+          </section>
+        )}
+
+      </main>
+    </div>
   )
 }
 
